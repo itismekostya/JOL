@@ -248,6 +248,10 @@ let catalogSyncFrame = 0;
 let glyphMode = false;
 let isBlockHot = false;
 let isBuyHot = false;
+let startSwipe = null;
+let suppressNextIntroClick = false;
+
+const introSwipeThreshold = 36;
 
 catalogRevealLines.forEach((line) => line.classList.add("retype-hidden"));
 
@@ -402,6 +406,16 @@ function scrollCatalogBy(deltaY) {
   liveProduct.scrollTop = clamp(liveProduct.scrollTop + deltaY, 0, maxScrollTop);
 }
 
+function isInteractiveTarget(target) {
+  return Boolean(target?.closest?.("a, button"));
+}
+
+function openCatalogFromIntro() {
+  if (isCatalogOpen) return;
+  isCatalogOpen = true;
+  renderScreen();
+}
+
 function swapGlyph(element, value) {
   if (element.textContent === value) return;
   element.textContent = value;
@@ -506,11 +520,51 @@ if (startScreen) {
     });
   });
 
+  startScreen.addEventListener("pointerdown", (event) => {
+    if (isCatalogOpen || isInteractiveTarget(event.target)) return;
+
+    startSwipe = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+    };
+  });
+
+  startScreen.addEventListener("pointerup", (event) => {
+    if (!startSwipe || isCatalogOpen) {
+      startSwipe = null;
+      return;
+    }
+
+    if (event.pointerId !== startSwipe.pointerId) return;
+
+    const deltaX = event.clientX - startSwipe.x;
+    const deltaY = event.clientY - startSwipe.y;
+    const isVerticalSwipe =
+      Math.abs(deltaY) >= introSwipeThreshold &&
+      Math.abs(deltaY) > Math.abs(deltaX);
+
+    startSwipe = null;
+
+    if (!isVerticalSwipe) return;
+
+    event.preventDefault();
+    suppressNextIntroClick = true;
+    openCatalogFromIntro();
+  });
+
+  startScreen.addEventListener("pointercancel", () => {
+    startSwipe = null;
+  });
+
   startScreen.addEventListener("click", (event) => {
     if (isCatalogOpen) return;
+    if (suppressNextIntroClick) {
+      suppressNextIntroClick = false;
+      return;
+    }
     event.preventDefault();
-    isCatalogOpen = true;
-    renderScreen();
+    openCatalogFromIntro();
   });
 }
 
