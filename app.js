@@ -96,150 +96,150 @@ const catalogItems = [
   {
     slug: "bird",
     title: "BIRD — $130",
-    description: "Lip cuff with stones.",
+    description: "Lip cuff with stones",
   },
   {
     slug: "snowdrop",
     title: "SNOWDROP — $500",
-    description: "Three-part transformer earrings.",
+    description: "Three-part transformer earrings",
     fit: "cover",
   },
   {
     slug: "birds-bracelet",
     title: "BIRDS — $300",
-    description: "Sterling silver bracelet.",
+    description: "Sterling silver bracelet",
   },
   {
     slug: "aiyy-tyyna-body-chain-2",
     title: "AIYY TYYNA — $800",
-    description: "Sterling silver body chain.",
+    description: "Sterling silver body chain",
     fit: "cover",
   },
   {
     slug: "aiyy-tyyna-body-chain",
     title: "AIYY TYYNA — $800",
-    description: "Sterling silver body chain.",
+    description: "Sterling silver body chain",
     fit: "cover",
   },
   {
     slug: "ice-sun-ring",
     title: "ICE SUN — $200",
-    description: "Sterling silver ring.",
+    description: "Sterling silver ring",
   },
   {
     slug: "fox-ring",
     title: "FOX — $200",
-    description: "Sterling silver ring.",
+    description: "Sterling silver ring",
     fit: "cover",
   },
   {
     slug: "choker",
     title: "CHOKER — $550",
-    description: "Sterling silver choker.",
+    description: "Sterling silver choker",
   },
   {
     slug: "wolf-ring",
     title: "WOLF — $250",
-    description: "Sterling silver ring.",
+    description: "Sterling silver ring",
     fit: "cover",
   },
   {
     slug: "birds-necklace",
     title: "BIRDS — $250",
-    description: "Sterling silver necklace.",
+    description: "Sterling silver necklace",
   },
   {
     slug: "aiyy-tyyna-studs",
     title: "AIYY TYYNA — $200",
-    description: "Sterling silver studs.",
+    description: "Sterling silver studs",
     fit: "cover",
   },
   {
     slug: "fox-pendant",
     title: "FOX — $150",
-    description: "Sterling silver pendant.",
+    description: "Sterling silver pendant",
   },
   {
     slug: "aiyy-tyyna-bracelet",
     title: "AIYY TYYNA — $200",
-    description: "Sterling silver bracelet with one symbol.",
+    description: "Sterling silver bracelet with one symbol",
     fit: "cover",
   },
   {
     slug: "bear-pendant",
     title: "BEAR — $120",
-    description: "Sterling silver pendant.",
+    description: "Sterling silver pendant",
   },
   {
     slug: "aiyy-tyyna-mono-earring",
     title: "AIYY TYYNA — $500",
-    description: "Mono earring with horsehair.",
+    description: "Mono earring with horsehair",
     fit: "cover",
   },
   {
     slug: "eagle-pendant",
     title: "EAGLE — $120",
-    description: "Sterling silver pendant.",
+    description: "Sterling silver pendant",
   },
   {
     slug: "snowdrop-2",
     title: "SNOWDROP — $500",
-    description: "Three-part transformer earrings.",
+    description: "Three-part transformer earrings",
     fit: "cover",
   },
   {
     slug: "unicorn-pendant",
     title: "UNICORN — $120",
-    description: "Sterling silver pendant.",
+    description: "Sterling silver pendant",
   },
   {
     slug: "icicle",
     title: "ICICLE — $130",
-    description: "Sterling silver pin earring.",
+    description: "Sterling silver pin earring",
     fit: "cover",
   },
   {
     slug: "deer-pendant",
     title: "DEER — $120",
-    description: "Sterling silver pendant.",
+    description: "Sterling silver pendant",
   },
   {
     slug: "leaf-pin-ear-cuff",
     title: "LEAF — $100",
-    description: "Pin ear cuff with stones.",
+    description: "Pin ear cuff with stones",
     fit: "cover",
   },
   {
     slug: "horse-pendant",
     title: "HORSE — $120",
-    description: "Sterling silver pendant.",
+    description: "Sterling silver pendant",
   },
   {
     slug: "leaf-lip-cuff",
     title: "LEAF — $100",
-    description: "Lip cuff with stones.",
+    description: "Lip cuff with stones",
     fit: "cover",
   },
   {
     slug: "ice",
     title: "ICE — $300",
-    description: "Sterling silver ear jacket with stones.",
+    description: "Sterling silver ear jacket with stones",
   },
   {
     slug: "ice-sun-necklace",
     title: "ICE SUN — $250",
-    description: "Sterling silver necklace.",
+    description: "Sterling silver necklace",
     fit: "cover",
   },
   {
     slug: "wolf-earrings",
     title: "WOLF — $250",
-    description: "Sterling silver earrings with leverback closure.",
+    description: "Sterling silver earrings with leverback closure",
   },
   {
     slug: "snowdrop-3",
     title: "SNOWDROP — $500",
-    description: "Three-part transformer earrings.",
+    description: "Three-part transformer earrings",
   },
 ];
 
@@ -421,9 +421,8 @@ function openCatalogFromIntro() {
 
 function shouldProxyCatalogScroll(target) {
   if (!isCatalogOpen || !liveProduct) return false;
-  if (liveProduct.contains(target)) return false;
 
-  return Boolean(target?.closest?.(".catalog-action, .catalog-details"));
+  return !liveProduct.contains(target);
 }
 
 function beginCatalogOverlayScroll(event) {

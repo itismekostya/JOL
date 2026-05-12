@@ -214,6 +214,7 @@ body.is-catalog-open .catalog-edge-space {
 .catalog-details.is-visible {
   display: block;
   pointer-events: auto;
+  touch-action: none;
   -webkit-user-select: text;
   user-select: text;
 }
@@ -225,6 +226,7 @@ body.is-catalog-open .catalog-edge-space {
 body.is-catalog-open .catalog-action {
   cursor: pointer;
   pointer-events: auto;
+  touch-action: none;
 }
 
 .rune-logo {
