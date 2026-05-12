@@ -1,0 +1,535 @@
+:root {
+  --background: #ffffff;
+  --ink: #111111;
+  --metal-ink: #171717;
+  --app-height: 100vh;
+  --visible-height: var(--app-height);
+  --catalog-page-height: var(--app-height);
+  --catalog-browser-chrome: 0px;
+  --catalog-progress: 0;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --app-height: 100dvh;
+  }
+}
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("assets/fonts/IBMPlexSans-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Runeicity Decorative001";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/Runeicity%20Decorative001.ttf") format("truetype");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: var(--app-height);
+  min-height: var(--app-height);
+  background: var(--background);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+body {
+  height: var(--app-height);
+  font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 23px;
+}
+
+.scroll-scene {
+  width: 100%;
+  height: var(--app-height);
+  position: relative;
+  overflow: hidden;
+}
+
+.sticky-stage {
+  position: fixed;
+  inset: 0;
+  height: var(--app-height);
+  min-height: var(--app-height);
+  overflow: hidden;
+  background: var(--background);
+}
+
+.start-screen {
+  position: absolute;
+  inset: 0;
+  height: var(--app-height);
+  min-height: var(--app-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  isolation: isolate;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 3;
+  --catalog-image-top: 50%;
+  --catalog-frame-width: min(100%, 46ch);
+}
+
+body.is-catalog-open .start-screen {
+  display: block;
+  padding: 0;
+  cursor: default;
+  background: var(--background);
+  isolation: auto;
+}
+
+.text-composition {
+  position: relative;
+  margin: 0;
+  width: min(100%, 40ch);
+  font: inherit;
+  letter-spacing: 0.02em;
+  line-height: 23px;
+  text-align: center;
+  color: var(--ink);
+  -webkit-text-stroke: 0;
+}
+
+.upper-panel,
+.lower-panel {
+  z-index: 2;
+}
+
+body.is-catalog-open .upper-panel,
+body.is-catalog-open .lower-panel {
+  position: absolute;
+  left: 50%;
+  z-index: 3;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+body.is-catalog-open .upper-panel {
+  top: 0;
+}
+
+body.is-catalog-open .lower-panel {
+  bottom: var(--catalog-browser-chrome);
+}
+
+.catalog-product {
+  z-index: 1;
+}
+
+body.is-catalog-open .catalog-product {
+  position: absolute;
+  left: 50%;
+  top: var(--catalog-image-top, 50%);
+  transform: translate(-50%, -50%);
+}
+
+.line {
+  display: block;
+  position: relative;
+  min-height: 23px;
+  max-height: 52px;
+  overflow: hidden;
+  white-space: pre;
+}
+
+.line.retype-hidden {
+  display: none;
+}
+
+.catalog-edge-space {
+  display: none;
+}
+
+body.is-catalog-open .catalog-edge-space {
+  display: block;
+}
+
+.segment {
+  display: block;
+}
+
+.frame-line {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-inline: auto;
+  white-space: normal;
+}
+
+.frame-line > span:first-child {
+  justify-self: start;
+}
+
+.frame-line > span:nth-child(2) {
+  justify-self: center;
+}
+
+.frame-line > span:last-child {
+  justify-self: end;
+}
+
+.frame-line-small {
+  width: 18.8ch;
+}
+
+.frame-line-large {
+  width: 23.8ch;
+}
+
+.frame-dot,
+.morph-symbol {
+  display: inline-block;
+}
+
+.live-catalog-frame {
+  display: none;
+}
+
+.catalog-details {
+  display: none;
+}
+
+.live-catalog-frame.is-visible {
+  display: block;
+}
+
+.catalog-details.is-visible {
+  display: block;
+}
+
+.catalog-action {
+  cursor: default;
+}
+
+body.is-catalog-open .catalog-action {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.rune-logo {
+  font-family: "Runeicity Decorative001", "IBM Plex Sans", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  padding-top: 6px;
+}
+
+.instagram-link {
+  display: inline-block;
+  color: inherit;
+  text-decoration-line: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.instagram-link:hover,
+.instagram-link:focus-visible {
+  text-decoration-line: underline;
+}
+
+.instagram-link:focus-visible {
+  outline: 0;
+}
+
+.catalog-screen {
+  position: absolute;
+  inset: 0;
+  min-height: var(--app-height);
+  opacity: var(--catalog-progress);
+  pointer-events: none;
+  transition: opacity 120ms linear;
+}
+
+body.is-catalog-open .catalog-screen {
+  pointer-events: auto;
+}
+
+.catalog-card {
+  width: min(100%, 1040px);
+  min-height: var(--app-height);
+  margin-inline: auto;
+  padding: 32px 24px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: center;
+  justify-items: center;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.catalog-top,
+.catalog-bottom {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.catalog-top {
+  display: none;
+}
+
+.catalog-buy {
+  color: inherit;
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+.catalog-buy span {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.catalog-logo {
+  padding-top: 0;
+}
+
+.catalog-frame-line {
+  width: var(--catalog-frame-width);
+  margin-inline: 0;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.catalog-product {
+  width: 100%;
+  margin: 0;
+  display: block;
+  height: 0;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+.catalog-product::-webkit-scrollbar {
+  display: none;
+}
+
+.live-product {
+  display: none;
+  height: 0;
+  max-height: 0;
+  pointer-events: none;
+}
+
+.live-product.is-visible {
+  display: block;
+  height: var(--catalog-page-height);
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  contain: strict;
+}
+
+body.is-catalog-open .live-product.is-visible {
+  width: 100vw;
+  height: var(--catalog-page-height);
+  max-height: none;
+}
+
+.catalog-image {
+  display: block;
+  width: auto;
+  height: var(--catalog-page-height);
+  max-width: none;
+  margin: auto;
+  object-fit: contain;
+  opacity: 1;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+body.is-catalog-open .catalog-image {
+  width: auto;
+  height: var(--catalog-page-height);
+  max-width: none;
+  max-height: none;
+}
+
+body.is-catalog-open .catalog-image.is-cover-image {
+  width: auto;
+  min-width: 0;
+  height: auto;
+  max-width: calc(100vw - 48px);
+  max-height: var(--catalog-page-height);
+  margin-left: 50%;
+  margin-right: 0;
+  object-fit: contain;
+  transform: translateX(-50%);
+}
+
+.catalog-image.is-active {
+  opacity: 1;
+}
+
+.catalog-title,
+.catalog-description {
+  margin: 0;
+  font: inherit;
+  font-weight: 300;
+}
+
+body.is-catalog-open .text-composition {
+  color: #ffffff;
+  mix-blend-mode: difference;
+}
+
+@media (max-width: 700px) {
+  .start-screen {
+    padding: 24px 16px;
+    --catalog-frame-width: calc(100vw - 32px);
+  }
+
+  body.is-catalog-open .start-screen {
+    padding: 0;
+  }
+
+  .optional-line {
+    display: none;
+  }
+
+  .text-composition {
+    width: min(calc(100vw - 32px), 42ch);
+    max-width: 42ch;
+    overflow: visible;
+  }
+
+  .frame-line-small {
+    width: 21.2ch;
+  }
+
+  .frame-line-large {
+    width: 26.4ch;
+  }
+
+  .catalog-screen {
+    padding: 0;
+  }
+
+  .catalog-card {
+    min-height: var(--app-height);
+    padding: 20px 16px;
+  }
+
+  .catalog-frame-line {
+    width: var(--catalog-frame-width);
+  }
+
+  .catalog-product {
+    margin-top: -4px;
+  }
+
+  .catalog-image {
+    width: 100vw;
+    height: var(--catalog-page-height);
+    max-width: none;
+    object-fit: contain;
+  }
+
+  body.is-catalog-open .catalog-image {
+    width: 100vw;
+    height: var(--catalog-page-height);
+    max-width: none;
+  }
+
+  body.is-catalog-open .catalog-image.is-cover-image {
+    width: 100vw;
+    min-width: 0;
+    height: var(--catalog-page-height);
+    max-width: none;
+    max-height: none;
+    margin-left: 0;
+    margin-right: 0;
+    object-fit: cover;
+    transform: none;
+  }
+}
+
+@media (min-width: 701px) and (max-height: 820px) {
+  .intro-section,
+  .story-section {
+    display: none;
+  }
+}
+
+@media (min-width: 701px) and (max-height: 560px) {
+  .top-marker,
+  .contact-section {
+    display: none;
+  }
+
+  .catalog-screen {
+    padding: 0;
+  }
+
+  .catalog-card {
+    min-height: var(--app-height);
+    padding-block: 12px;
+  }
+
+  .catalog-close,
+  .catalog-bottom .line:nth-child(2),
+  .catalog-bottom .line:nth-child(4),
+  .catalog-bottom .line:nth-child(6),
+  .catalog-buy,
+  .catalog-bottom .line:last-child {
+    display: none;
+  }
+
+}
+
+@media (min-width: 701px) and (max-height: 360px) {
+  .rune-logo {
+    font-size: 24px;
+    padding-top: 3px;
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) and (max-height: 520px) and (hover: hover) and (pointer: fine) {
+  .intro-section,
+  .story-section,
+  .top-marker,
+  .contact-section {
+    display: none;
+  }
+
+}
+
+@media (max-width: 700px) and (max-height: 760px) and (hover: hover) and (pointer: fine) {
+  .intro-section,
+  .story-section {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 520px) and (hover: hover) and (pointer: fine) {
+  .top-marker,
+  .contact-section {
+    display: none;
+  }
+
+}
