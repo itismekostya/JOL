@@ -422,7 +422,7 @@ function openCatalogFromIntro() {
 function shouldProxyCatalogScroll(target) {
   if (!isCatalogOpen || !liveProduct) return false;
 
-  return true;
+  return !liveProduct.contains(target);
 }
 
 function beginCatalogOverlayScroll(event) {
@@ -677,7 +677,7 @@ window.addEventListener(
   "wheel",
   (event) => {
     if (!isCatalogOpen) return;
-    if (event.ctrlKey) return;
+    if (liveProduct?.contains(event.target)) return;
     event.preventDefault();
     scrollCatalogBy(event.deltaY);
   },
