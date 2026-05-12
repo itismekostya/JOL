@@ -249,9 +249,12 @@ let glyphMode = false;
 let isBlockHot = false;
 let isBuyHot = false;
 let startSwipe = null;
+let catalogSwipe = null;
 let suppressNextIntroClick = false;
+let suppressNextCatalogClick = false;
 
 const introSwipeThreshold = 36;
+const catalogSwipeThreshold = 4;
 
 catalogRevealLines.forEach((line) => line.classList.add("retype-hidden"));
 
@@ -416,6 +419,52 @@ function openCatalogFromIntro() {
   renderScreen();
 }
 
+function shouldProxyCatalogScroll(target) {
+  if (!isCatalogOpen || !liveProduct) return false;
+  if (liveProduct.contains(target)) return false;
+
+  return Boolean(target?.closest?.(".catalog-action, .catalog-details"));
+}
+
+function beginCatalogOverlayScroll(event) {
+  if (event.pointerType === "mouse" || !shouldProxyCatalogScroll(event.target)) {
+    return false;
+  }
+
+  catalogSwipe = {
+    pointerId: event.pointerId,
+    startY: event.clientY,
+    lastY: event.clientY,
+    moved: false,
+  };
+
+  startScreen?.setPointerCapture?.(event.pointerId);
+  return true;
+}
+
+function suppressCatalogClickOnce() {
+  suppressNextCatalogClick = true;
+  window.setTimeout(() => {
+    suppressNextCatalogClick = false;
+  }, 300);
+}
+
+function endCatalogOverlayScroll(event) {
+  if (!catalogSwipe || event.pointerId !== catalogSwipe.pointerId) return false;
+
+  const didMove = catalogSwipe.moved;
+  catalogSwipe = null;
+  startScreen?.releasePointerCapture?.(event.pointerId);
+
+  if (!didMove) return false;
+
+  event.preventDefault();
+  suppressCatalogClickOnce();
+  finishCatalogScroll();
+  scrollCatalogToIndex(currentCatalogIndex);
+  return true;
+}
+
 function swapGlyph(element, value) {
   if (element.textContent === value) return;
   element.textContent = value;
@@ -505,6 +554,13 @@ liveProduct?.addEventListener("wheel", preventCatalogOverscroll, { passive: fals
 const catalogAction = document.querySelector(".catalog-action");
 if (catalogAction) {
   catalogAction.addEventListener("click", (event) => {
+    if (suppressNextCatalogClick) {
+      event.preventDefault();
+      event.stopPropagation();
+      suppressNextCatalogClick = false;
+      return;
+    }
+
     if (!isCatalogOpen) return;
     event.preventDefault();
     event.stopPropagation();
@@ -516,11 +572,17 @@ if (catalogAction) {
 if (startScreen) {
   startScreen.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", (event) => {
+      if (suppressNextCatalogClick) {
+        event.preventDefault();
+        suppressNextCatalogClick = false;
+      }
+
       event.stopPropagation();
     });
   });
 
   startScreen.addEventListener("pointerdown", (event) => {
+    if (beginCatalogOverlayScroll(event)) return;
     if (isCatalogOpen || isInteractiveTarget(event.target)) return;
 
     startSwipe = {
@@ -530,7 +592,29 @@ if (startScreen) {
     };
   });
 
+  startScreen.addEventListener(
+    "pointermove",
+    (event) => {
+      if (!catalogSwipe || event.pointerId !== catalogSwipe.pointerId) return;
+
+      const totalY = event.clientY - catalogSwipe.startY;
+      const deltaY = catalogSwipe.lastY - event.clientY;
+      catalogSwipe.lastY = event.clientY;
+
+      if (!catalogSwipe.moved && Math.abs(totalY) < catalogSwipeThreshold) {
+        return;
+      }
+
+      catalogSwipe.moved = true;
+      event.preventDefault();
+      scrollCatalogBy(deltaY);
+    },
+    { passive: false }
+  );
+
   startScreen.addEventListener("pointerup", (event) => {
+    if (endCatalogOverlayScroll(event)) return;
+
     if (!startSwipe || isCatalogOpen) {
       startSwipe = null;
       return;
@@ -553,11 +637,21 @@ if (startScreen) {
     openCatalogFromIntro();
   });
 
-  startScreen.addEventListener("pointercancel", () => {
+  startScreen.addEventListener("pointercancel", (event) => {
+    if (catalogSwipe?.pointerId === event.pointerId) {
+      catalogSwipe = null;
+    }
+
     startSwipe = null;
   });
 
   startScreen.addEventListener("click", (event) => {
+    if (suppressNextCatalogClick) {
+      event.preventDefault();
+      suppressNextCatalogClick = false;
+      return;
+    }
+
     if (isCatalogOpen) return;
     if (suppressNextIntroClick) {
       suppressNextIntroClick = false;
