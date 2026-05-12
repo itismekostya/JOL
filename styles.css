@@ -94,6 +94,7 @@ body.is-catalog-open .start-screen {
   cursor: default;
   background: var(--background);
   isolation: auto;
+  touch-action: none;
 }
 
 .text-composition {
@@ -345,7 +346,7 @@ body.is-catalog-open .catalog-screen {
   pointer-events: auto;
   scroll-behavior: smooth;
   scroll-snap-type: y mandatory;
-  touch-action: pan-y;
+  touch-action: none;
   -webkit-overflow-scrolling: touch;
   contain: strict;
 }
