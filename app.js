@@ -107,7 +107,7 @@ const catalogItems = [
   {
     slug: "birds-bracelet",
     title: "BIRDS — $300",
-    description: "Sterling silver bracelet. Approx. 4.3 g.",
+    description: "Sterling silver bracelet.",
   },
   {
     slug: "aiyy-tyyna-body-chain-2",
@@ -124,7 +124,7 @@ const catalogItems = [
   {
     slug: "ice-sun-ring",
     title: "ICE SUN — $200",
-    description: "Sterling silver ring. Approx. 4.37 g.",
+    description: "Sterling silver ring.",
   },
   {
     slug: "fox-ring",
@@ -135,7 +135,7 @@ const catalogItems = [
   {
     slug: "choker",
     title: "CHOKER — $550",
-    description: "Sterling silver choker. Approx. 21 g.",
+    description: "Sterling silver choker.",
   },
   {
     slug: "wolf-ring",
@@ -146,7 +146,7 @@ const catalogItems = [
   {
     slug: "birds-necklace",
     title: "BIRDS — $250",
-    description: "Sterling silver necklace. Approx. 9.74 g.",
+    description: "Sterling silver necklace.",
   },
   {
     slug: "aiyy-tyyna-studs",
@@ -223,12 +223,12 @@ const catalogItems = [
   {
     slug: "ice",
     title: "ICE — $300",
-    description: "Sterling silver ear jacket with stones. Approx. 2.25 g.",
+    description: "Sterling silver ear jacket with stones.",
   },
   {
     slug: "ice-sun-necklace",
     title: "ICE SUN — $250",
-    description: "Sterling silver necklace. Approx. 5.37 g.",
+    description: "Sterling silver necklace.",
     fit: "cover",
   },
   {
