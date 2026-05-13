@@ -23,10 +23,23 @@ const catalogTitle = document.querySelector(".catalog-title");
 const catalogDescription = document.querySelector(".catalog-description");
 const catalogBuy = document.querySelector(".catalog-buy");
 const catalogBuyDot = document.querySelector(".catalog-buy-dot");
+const introFitStates = [
+  [],
+  [...document.querySelectorAll(".optional-line")],
+  [...document.querySelectorAll(".optional-line, .story-section")],
+  [...document.querySelectorAll(".optional-line, .story-section, .intro-section")],
+  [
+    ...document.querySelectorAll(
+      ".optional-line, .story-section, .intro-section, .top-marker, .contact-section, .catalog-hide-line"
+    ),
+  ],
+];
+const introFitElements = [...new Set(introFitStates.flat())];
 
 let isCatalogOpen = false;
 let catalogPageHeight =
   window.visualViewport?.height || window.innerHeight || 1;
+let introFitFrame = 0;
 
 function getVisibleViewportHeight() {
   return window.visualViewport?.height || window.innerHeight || 1;
@@ -79,18 +92,87 @@ function setViewportVars(appHeight, visibleHeight = appHeight) {
   root.style.setProperty("--catalog-browser-chrome", `${chromeHeight}px`);
 }
 
+function resetIntroFit() {
+  introFitElements.forEach((element) => {
+    element.classList.remove("intro-fit-hidden");
+  });
+}
+
+function getIntroContentBounds() {
+  const blocks = textCompositions.filter((element) => {
+    const rect = element.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  });
+
+  if (!blocks.length) return null;
+
+  return blocks.reduce(
+    (bounds, element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        top: Math.min(bounds.top, rect.top),
+        bottom: Math.max(bounds.bottom, rect.bottom),
+      };
+    },
+    { top: Infinity, bottom: -Infinity }
+  );
+}
+
+function introFitsViewport() {
+  if (!startScreen) return true;
+
+  const screenRect = startScreen.getBoundingClientRect();
+  const bounds = getIntroContentBounds();
+  const breathingRoom = 4;
+
+  if (!bounds) return true;
+
+  return (
+    bounds.top >= screenRect.top + breathingRoom &&
+    bounds.bottom <= screenRect.bottom - breathingRoom
+  );
+}
+
+function fitIntroComposition() {
+  if (!startScreen) return;
+
+  if (isCatalogOpen) {
+    resetIntroFit();
+    return;
+  }
+
+  resetIntroFit();
+
+  for (const group of introFitStates) {
+    resetIntroFit();
+    group.forEach((element) => element.classList.add("intro-fit-hidden"));
+    if (introFitsViewport()) return;
+  }
+}
+
+function requestIntroFit() {
+  if (introFitFrame) return;
+
+  introFitFrame = window.requestAnimationFrame(() => {
+    introFitFrame = 0;
+    fitIntroComposition();
+  });
+}
+
 function syncViewportHeight() {
   const viewportHeight = getVisibleViewportHeight();
   if (isCatalogOpen) return;
 
   setViewportVars(viewportHeight);
   catalogPageHeight = viewportHeight;
+  requestIntroFit();
 }
 
 syncViewportHeight();
 window.addEventListener("resize", syncViewportHeight);
 window.visualViewport?.addEventListener("resize", syncViewportHeight);
 window.visualViewport?.addEventListener("scroll", syncViewportHeight);
+document.fonts?.ready.then(requestIntroFit);
 
 const catalogItems = [
   {
@@ -494,6 +576,8 @@ function setGlyphMode(nextMode) {
 }
 
 function renderScreen() {
+  if (isCatalogOpen) resetIntroFit();
+
   setGlyphMode(isCatalogOpen);
 
   introLines.forEach((line) => {

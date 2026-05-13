@@ -150,6 +150,10 @@ body.is-catalog-open .catalog-product {
   white-space: pre;
 }
 
+.intro-fit-hidden {
+  display: none !important;
+}
+
 .line.retype-hidden {
   display: none;
 }
@@ -481,49 +485,4 @@ body.is-catalog-open .text-composition {
     object-fit: cover;
     transform: none;
   }
-}
-
-@media (min-width: 701px) and (max-height: 420px) {
-  .intro-section,
-  .story-section,
-  .top-marker,
-  .contact-section {
-    display: none;
-  }
-
-  .catalog-screen {
-    padding: 0;
-  }
-
-  .catalog-card {
-    min-height: var(--app-height);
-    padding-block: 12px;
-  }
-
-  .catalog-close,
-  .catalog-bottom .line:nth-child(2),
-  .catalog-bottom .line:nth-child(4),
-  .catalog-bottom .line:nth-child(6),
-  .catalog-buy,
-  .catalog-bottom .line:last-child {
-    display: none;
-  }
-
-}
-
-@media (min-width: 701px) and (max-height: 360px) {
-  .rune-logo {
-    font-size: 24px;
-    padding-top: 3px;
-  }
-}
-
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
-  .intro-section,
-  .story-section,
-  .top-marker,
-  .contact-section {
-    display: none;
-  }
-
 }
